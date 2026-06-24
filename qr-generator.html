@@ -2,74 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional QR Generator</title>
+    <title>Business QR Card Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { width: 100%; max-width: 500px; background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #334155; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: none; box-sizing: border-box; }
-        .btn-gen { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        #qr-box { margin-top: 20px; padding: 20px; background: white; border-radius: 10px; display: inline-block; }
-        .actions { margin-top: 20px; display: flex; gap: 10px; }
-        .actions button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-down { background: #10b981; color: white; }
-        .btn-share { background: #8b5cf6; color: white; }
+        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
+        .card { width: 100%; max-width: 450px; background: #1e293b; padding: 25px; border-radius: 20px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #qrcode { margin-top: 20px; background: white; padding: 10px; display: inline-block; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>QR Generator</h1>
-    <input type="text" id="qrTitle" placeholder="Title for QR">
-    <input type="text" id="text" placeholder="Enter link or text...">
-    <button class="btn-gen" onclick="makeQR()">Generate Now</button>
+<div class="card">
+    <h1>Business QR Card</h1>
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="text" id="shop" placeholder="Shop/Company Name">
+    <input type="text" id="phone" placeholder="Mobile Number">
+    <input type="text" id="email" placeholder="Email Address">
+    <input type="file" id="logoInput" accept="image/*">
+    <button onclick="generateBusinessQR()">Create Business QR</button>
 
-    <div id="qr-box" style="display:none;">
-        <h3 id="displayTitle" style="color:black; margin:0 0 10px 0;"></h3>
-        <div id="qrcode"></div>
-    </div>
-
-    <div class="actions" id="action-btns" style="display:none;">
-        <button class="btn-down" onclick="downloadQR()">Download</button>
-        <button class="btn-share" onclick="shareQR()">Share</button>
-    </div>
-    <br><a href="index.html" style="color: #94a3b8;">Back to Home</a>
+    <div id="qrcode"></div>
 </div>
 
 <script>
-    function makeQR() {
-        const text = document.getElementById("text").value;
-        const title = document.getElementById("qrTitle").value;
-        const qrDiv = document.getElementById("qrcode");
-        if(!text) { alert("Please enter something!"); return; }
+    function generateBusinessQR() {
+        const name = document.getElementById('name').value;
+        const shop = document.getElementById('shop').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
         
-        qrDiv.innerHTML = "";
-        new QRCode(qrDiv, { text: text, width: 200, height: 200 });
-        
-        document.getElementById("displayTitle").innerText = title;
-        document.getElementById("qr-box").style.display = "block";
-        document.getElementById("action-btns").style.display = "flex";
-    }
+        // vCard فارمیٹ (کانٹیکٹ سیو کرنے کے لیے)
+        const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+ORG:${shop}
+TEL:${phone}
+EMAIL:${email}
+END:VCARD`;
 
-    function downloadQR() {
-        const img = document.querySelector("#qrcode img");
-        const a = document.createElement("a");
-        a.href = img.src;
-        a.download = "my-qr-code.png";
-        a.click();
-    }
-
-    async function shareQR() {
-        const img = document.querySelector("#qrcode img");
-        const response = await fetch(img.src);
-        const blob = await response.blob();
-        const file = new File([blob], "qr.png", { type: "image/png" });
-        if (navigator.share) {
-            await navigator.share({ files: [file] });
-        } else {
-            alert("Sharing not supported on this browser.");
-        }
+        document.getElementById('qrcode').innerHTML = "";
+        new QRCode(document.getElementById('qrcode'), {
+            text: vcard,
+            width: 200,
+            height: 200
+        });
     }
 </script>
 </body>
