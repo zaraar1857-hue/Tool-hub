@@ -14,16 +14,15 @@
         
         #result-section { margin-top: 25px; display: none; }
         
-        /* Swift Store Style Premium Output Card */
+        /* Premium Output Card - Styled like Screenshot_20260625-002706.png */
         #capture-area { 
-            background: linear-gradient(180deg, #059669 0%, #064e3b 100%); 
-            color: #ffffff; padding: 35px 25px; border-radius: 25px; width: 340px; text-align: center; margin: auto; border: 2px solid white;
+            background: #059669; color: #ffffff; padding: 35px 25px; border-radius: 20px; width: 340px; text-align: center; margin: auto;
         }
-        #capture-area h2 { margin: 0 0 5px 0; color: #ffffff; font-size: 24px; text-transform: uppercase; }
-        #capture-area h4 { margin: 0 0 15px 0; color: #d1fae5; font-size: 14px; font-weight: 400; }
-        .payment-info { background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2); text-align: left; }
-        .payment-info p { margin: 5px 0; font-size: 13px; color: #fff; }
-        .qr-box { background: white; padding: 10px; border-radius: 12px; display: inline-block; margin-top: 15px; border: 4px solid #fff; }
+        #capture-area h2 { margin: 0 0 5px 0; font-size: 24px; text-transform: uppercase; }
+        #capture-area h4 { margin: 0 0 15px 0; font-size: 14px; font-weight: 400; }
+        .payment-info { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
+        .payment-info p { margin: 5px 0; font-size: 13px; }
+        .qr-box { background: white; padding: 10px; border-radius: 10px; display: inline-block; }
         .qr-box img { width: 180px; height: 180px; display: block; }
         
         .actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
@@ -38,7 +37,7 @@
     <h1>Global Pay & Business QR</h1>
     <input type="text" id="shopName" placeholder="Shop / Business Name">
     <input type="text" id="personName" placeholder="Owner Name">
-    <input type="tel" id="mobileNum" placeholder="Mobile / WhatsApp Number">
+    <input type="tel" id="mobileNum" placeholder="Mobile Number">
     
     <select id="bankSelect" onchange="toggleCustomBank()">
         <option value="">-- Select Bank/Wallet --</option>
@@ -83,10 +82,11 @@
         const bank = document.getElementById("customBankInput").value || document.getElementById("bankSelect").value;
         const acc = document.getElementById("accountNum").value;
 
-        if(!shop) { alert("Please enter Shop Name!"); return; }
-        if(!name) { alert("Please enter Owner Name!"); return; }
-        if(!bank) { alert("Please select or enter a Bank Name!"); return; }
-        if(!acc) { alert("Please enter Account Number!"); return; }
+        // Validation Logic
+        if(!shop || !name || !bank || !acc) {
+            alert("⚠️ Please fill all fields to generate the QR Code!");
+            return;
+        }
 
         document.getElementById("out-shop").innerText = shop;
         document.getElementById("out-name").innerText = name;
@@ -103,13 +103,17 @@
     const providers = [
         "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=",
         "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=",
-        "https://quickchart.io/qr?text="
+        "https://quickchart.io/qr?text=",
+        "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=",
+        "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl="
     ];
 
     function nextProvider(img) {
         pIdx++;
         if(pIdx < providers.length) {
-            img.src = providers[pIdx] + encodeURIComponent("Retry_Pay_Card");
+            img.src = providers[pIdx] + encodeURIComponent("Retry");
+        } else {
+            alert("Error: Could not generate QR. Account/Service not found.");
         }
     }
 
