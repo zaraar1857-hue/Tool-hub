@@ -3,53 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Resizer - Tool Hub</title>
+    <title>Image Resizer</title>
     <style>
-        body { background: #0b1120; color: #fff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .tool-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); padding: 40px; border-radius: 24px; width: 100%; max-width: 500px; text-align: center; }
-        h2 { margin-bottom: 20px; }
-        input { margin: 10px 0; width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; }
-        .btn { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 18px; border-radius: 12px; color: white; cursor: pointer; width: 100%; font-size: 18px; font-weight: 600; margin-top: 15px; }
+        body { font-family: 'Poppins', sans-serif; background: #0b1120; color: #fff; padding: 20px; text-align: center; }
+        .tool-container { max-width: 500px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h1 { color: #38bdf8; }
+        input { margin: 10px 0; padding: 10px; width: 100%; border-radius: 8px; border: none; }
+        button { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 15px; color: white; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        canvas { display: none; }
+        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div class="tool-card">
-    <h2>Image Resizer</h2>
-    <input type="file" id="imageInput" accept="image/*">
-    <input type="number" id="widthInput" placeholder="Enter Width (e.g. 800)">
-    <button class="btn" onclick="resizeImage()">Resize & Download</button>
+<div class="tool-container">
+    <h1>Image Resizer</h1>
+    <input type="file" id="upload" accept="image/*">
+    <input type="number" id="width" placeholder="Width (px)">
+    <input type="number" id="height" placeholder="Height (px)">
+    <button onclick="resizeImage()">Resize & Download</button>
+    <canvas id="canvas"></canvas>
+    <br>
+    <a href="index.html" class="back-btn">← Back to Home</a>
 </div>
-
-<canvas id="canvas" style="display:none;"></canvas>
 
 <script>
     function resizeImage() {
-        const fileInput = document.getElementById('imageInput');
-        const width = document.getElementById('widthInput').value;
-        if (!fileInput.files[0] || !width) { alert("Please select an image and enter width!"); return; }
+        const file = document.getElementById('upload').files[0];
+        const width = document.getElementById('width').value;
+        const height = document.getElementById('height').value;
+        if (!file || !width || !height) return alert("Please select image and enter dimensions!");
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function(event) {
             const img = new Image();
             img.onload = function() {
                 const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d');
-                const scaleFactor = width / img.width;
                 canvas.width = width;
-                canvas.height = img.height * scaleFactor;
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
                 
                 const link = document.createElement('a');
-                link.download = 'resized_image.png';
+                link.download = 'resized-image.png';
                 link.href = canvas.toDataURL();
                 link.click();
             };
-            img.src = e.target.result;
+            img.src = event.target.result;
         };
-        reader.readAsDataURL(fileInput.files[0]);
+        reader.readAsDataURL(file);
     }
 </script>
-
 </body>
 </html>
