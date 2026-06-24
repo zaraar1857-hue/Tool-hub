@@ -3,83 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
+    <title>Advanced QR Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #0f172a; 
-            color: #ffffff; 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-        }
-        .tool-container { 
-            width: 100%; 
-            max-width: 500px; 
-            background: #1e293b; 
-            padding: 40px; 
-            border-radius: 20px; 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); 
-            text-align: center;
-            border: 1px solid #334155;
-        }
-        h1 { color: #38bdf8; font-size: 2rem; margin-bottom: 20px; }
-        input { 
-            width: 100%; 
-            padding: 18px; 
-            margin-bottom: 20px; 
-            border-radius: 12px; 
-            border: 2px solid #334155; 
-            background: #0f172a; 
-            color: white; 
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        button { 
-            width: 100%; 
-            padding: 18px; 
-            background: #38bdf8; 
-            border: none; 
-            color: #0f172a; 
-            font-weight: bold; 
-            font-size: 16px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            transition: 0.3s;
-        }
-        button:hover { background: #7dd3fc; }
-        #qrcode { 
-            margin-top: 30px; 
-            background: white; 
-            padding: 15px; 
-            border-radius: 10px; 
-            display: inline-block; 
-        }
-        .back-btn { display: block; margin-top: 25px; color: #94a3b8; text-decoration: none; font-size: 14px; }
-        .back-btn:hover { color: white; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .tool-container { width: 100%; max-width: 500px; background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); text-align: center; border: 1px solid #334155; }
+        h1 { color: #38bdf8; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #38bdf8; border: none; color: #0f172a; font-weight: bold; border-radius: 10px; cursor: pointer; }
+        #qr-display { margin-top: 20px; display: none; }
+        #qr-title-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        #qrcode { background: white; padding: 10px; border-radius: 10px; display: inline-block; }
+        .action-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .action-btns button { flex: 1; background: #8b5cf6; color: white; padding: 10px; }
     </style>
 </head>
 <body>
 
 <div class="tool-container">
     <h1>QR Generator</h1>
+    <input type="text" id="qrTitle" placeholder="Enter Title (e.g., My Business QR)">
     <input type="text" id="text" placeholder="Enter link or text...">
     <button onclick="generateQR()">Generate QR Code</button>
-    <div id="qrcode"></div>
-    <a href="index.html" class="back-btn">← Back to Home</a>
+    
+    <div id="qr-display">
+        <div id="qr-title-text"></div>
+        <div id="qrcode"></div>
+        <div class="action-btns">
+            <button onclick="downloadQR()">Download</button>
+            <button onclick="shareQR()">Share</button>
+        </div>
+    </div>
+    <a href="index.html" style="display:block; margin-top:20px; color:#94a3b8; text-decoration:none;">← Back Home</a>
 </div>
 
 <script>
     function generateQR() {
+        const title = document.getElementById("qrTitle").value;
         const text = document.getElementById("text").value;
         const qrDiv = document.getElementById("qrcode");
+        
+        if (!text) { alert("Please enter content!"); return; }
+        
         qrDiv.innerHTML = "";
-        if (!text) { alert("Please enter something!"); return; }
+        document.getElementById("qr-title-text").innerText = title;
         new QRCode(qrDiv, { text: text, width: 200, height: 200 });
+        document.getElementById("qr-display").style.display = "block";
+    }
+
+    function downloadQR() {
+        const link = document.createElement('a');
+        link.download = (document.getElementById("qrTitle").value || "qrcode") + '.png';
+        link.href = document.querySelector('#qrcode img').src;
+        link.click();
+    }
+
+    function shareQR() {
+        if (navigator.share) {
+            fetch(document.querySelector('#qrcode img').src)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], "qrcode.png", { type: "image/png" });
+                    navigator.share({ files: [file], title: 'QR Code', text: 'Check this out!' });
+                });
+        } else { alert("Sharing not supported."); }
     }
 </script>
 </body>
