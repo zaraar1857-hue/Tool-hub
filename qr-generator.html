@@ -35,18 +35,62 @@
 
 <div class="container">
     <h1>Global Pay & Business QR</h1>
+    
     <input type="text" id="shopName" placeholder="Shop / Business Name">
     <input type="text" id="personName" placeholder="Owner Name">
-    <input type="tel" id="mobileNum" placeholder="Mobile Number">
+    <input type="tel" id="mobileNum" placeholder="Mobile / WhatsApp Number">
     
     <select id="bankSelect" onchange="toggleCustomBank()">
-        <option value="">-- Select Bank/Wallet --</option>
-        <optgroup label="🌍 Global"><option value="PayPal">PayPal</option><option value="Wise">Wise</option></optgroup>
-        <optgroup label="🇵🇰 Pakistan"><option value="Easypaisa">Easypaisa</option><option value="JazzCash">JazzCash</option><option value="HBL">HBL</option></optgroup>
-        <option value="Other">➕ Other</option>
+        <option value="">-- Select Payment Method / Bank --</option>
+        <optgroup label="🌍 Global Wallets & Cards">
+            <option value="PayPal">PayPal</option>
+            <option value="Wise">Wise (TransferWise)</option>
+            <option value="Payoneer">Payoneer</option>
+            <option value="Skrill">Skrill</option>
+            <option value="Binance Pay / Crypto">Binance Pay / Crypto</option>
+            <option value="Google Pay">Google Pay</option>
+            <option value="Apple Pay">Apple Pay</option>
+            <option value="Stripe">Stripe</option>
+        </optgroup>
+        <optgroup label="🇵🇰 Pakistan Banks & Wallets">
+            <option value="Easypaisa">Easypaisa</option>
+            <option value="JazzCash">JazzCash</option>
+            <option value="SadaPay">SadaPay</option>
+            <option value="NayaPay">NayaPay</option>
+            <option value="RAAST ID">RAAST ID</option>
+            <option value="HBL (Habib Bank Limited)">HBL (Habib Bank Limited)</option>
+            <option value="UBL (United Bank Limited)">UBL (United Bank Limited)</option>
+            <option value="Meezan Bank">Meezan Bank</option>
+            <option value="Allied Bank">Allied Bank</option>
+            <option value="MCB Bank">MCB Bank</option>
+            <option value="Bank Alfalah">Bank Alfalah</option>
+        </optgroup>
+        <optgroup label="🇮🇳 India Banks & UPI">
+            <option value="Paytm">Paytm</option>
+            <option value="PhonePe">PhonePe</option>
+            <option value="GPay (Google Pay India)">GPay (Google Pay India)</option>
+            <option value="UPI ID">UPI ID</option>
+            <option value="SBI (State Bank of India)">SBI (State Bank of India)</option>
+            <option value="HDFC Bank">HDFC Bank</option>
+            <option value="ICICI Bank">ICICI Bank</option>
+            <option value="Axis Bank">Axis Bank</option>
+            <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+        </optgroup>
+        <optgroup label="🌐 International Banks">
+            <option value="HSBC">HSBC</option>
+            <option value="Standard Chartered">Standard Chartered</option>
+            <option value="CitiBank">CitiBank</option>
+            <option value="Barclays">Barclays</option>
+            <option value="Al Rajhi Bank">Al Rajhi Bank</option>
+            <option value="Dubai Islamic Bank">Dubai Islamic Bank</option>
+        </optgroup>
+        <optgroup label="✏️ Custom / Other">
+            <option value="Other">➕ Other (Type Manually)</option>
+        </optgroup>
     </select>
-    <input type="text" id="customBankInput" placeholder="Enter Bank Name" style="display: none;">
-    <input type="text" id="accountNum" placeholder="Account Number">
+
+    <input type="text" id="customBankInput" placeholder="Enter Your Bank Name Manually" style="display: none;">
+    <input type="text" id="accountNum" placeholder="Account Number / IBAN / UPI / Crypto">
     
     <button class="btn-gen" onclick="validateAndGenerate()">Generate Premium Card</button>
 
@@ -82,9 +126,8 @@
         const bank = document.getElementById("customBankInput").value || document.getElementById("bankSelect").value;
         const acc = document.getElementById("accountNum").value;
 
-        // Validation Logic
         if(!shop || !name || !bank || !acc) {
-            alert("⚠️ Please fill all fields to generate the QR Code!");
+            alert("⚠️ Please fill all fields correctly!");
             return;
         }
 
@@ -113,7 +156,7 @@
         if(pIdx < providers.length) {
             img.src = providers[pIdx] + encodeURIComponent("Retry");
         } else {
-            alert("Error: Could not generate QR. Account/Service not found.");
+            alert("Error: Account or Service Not Found!");
         }
     }
 
