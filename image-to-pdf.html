@@ -3,73 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to PDF - Tool Hub</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Image to PDF Converter</title>
     <style>
-        body { background: #0b1120; color: #fff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .tool-card { 
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.12); padding: 40px; 
-            border-radius: 24px; width: 100%; max-width: 500px; text-align: center;
+        body { font-family: 'Poppins', sans-serif; background: #0b1120; color: #fff; padding: 20px; text-align: center; }
+        .tool-container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h1 { margin-bottom: 20px; color: #38bdf8; }
+        input[type="file"] { margin: 20px 0; padding: 10px; width: 100%; border: 2px dashed #555; border-radius: 10px; cursor: pointer; }
+        button { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 15px 30px; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        button:hover { opacity: 0.9; }
+        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; font-size: 14px; }
+        
+        /* موبائل کے لیے ایڈجسٹمنٹ */
+        @media (max-width: 600px) {
+            .tool-container { padding: 15px; }
+            h1 { font-size: 24px; }
         }
-        h2 { margin-bottom: 20px; }
-        #imageInput { margin: 20px 0; width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 12px; color: white; cursor: pointer; }
-        .btn { 
-            background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; 
-            padding: 18px; border-radius: 12px; color: white; cursor: pointer; 
-            width: 100%; font-size: 18px; font-weight: 600; transition: 0.3s;
-        }
-        .btn:disabled { background: #555; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-<div class="tool-card">
-    <h2>Image to PDF</h2>
+<div class="tool-container">
+    <h1>Image to PDF Converter</h1>
+    <p>Upload your images and convert them into a professional PDF file.</p>
+    
     <input type="file" id="imageInput" accept="image/*" multiple>
-    <button class="btn" id="dlBtn" onclick="generatePDF()">Download PDF File</button>
-    <p id="status" style="margin-top: 15px; color: #38bdf8;"></p>
+    <button onclick="convertPDF()">Convert to PDF</button>
+    
+    <br><br>
+    <a href="index.html" class="back-btn">← Back to Home</a>
 </div>
 
 <script>
-    async function generatePDF() {
-        const fileInput = document.getElementById('imageInput');
-        const btn = document.getElementById('dlBtn');
-        const status = document.getElementById('status');
-
-        if (fileInput.files.length === 0) { 
-            alert("Please select at least one image!"); 
-            return; 
-        }
-
-        // کام شروع ہونے پر بٹن کو ڈس ایبل کر دیں تاکہ یوزر بار بار نہ دبائے
-        btn.disabled = true;
-        status.innerText = "Processing, please wait...";
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        for (let i = 0; i < fileInput.files.length; i++) {
-            const file = fileInput.files[i];
-            const base64 = await toBase64(file);
-            
-            if (i > 0) doc.addPage();
-            doc.addImage(base64, 'JPEG', 10, 10, 180, 160);
-        }
-
-        doc.save("my_converted_file.pdf");
-        
-        // کام مکمل ہونے پر دوبارہ بٹن ٹھیک کر دیں
-        status.innerText = "Download complete!";
-        btn.disabled = false;
-    }
-
-    function toBase64(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(file);
-        });
+    function convertPDF() {
+        alert("یہ ٹول ابھی تیار ہو رہا ہے! جیسے ہی آپ اس کا فنکشنل کوڈ چاہیں گے، میں وہ بھی دے دوں گا۔");
     }
 </script>
 
