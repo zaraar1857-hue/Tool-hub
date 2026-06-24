@@ -6,27 +6,87 @@
     <title>QR Code Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #0b1120; color: #fff; padding: 20px; text-align: center; }
-        .box { max-width: 400px; margin: auto; background: #1e293b; padding: 20px; border-radius: 15px; }
-        input { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #38bdf8; border: none; color: white; cursor: pointer; }
-        #qrcode { margin-top: 20px; background: white; padding: 10px; display: inline-block; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #0b1120; 
+            color: #fff; 
+            margin: 0; 
+            padding: 40px 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .tool-container { 
+            width: 100%; 
+            max-width: 600px; 
+            background: rgba(255,255,255,0.05); 
+            padding: 40px; 
+            border-radius: 25px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 { color: #38bdf8; font-size: 2.5rem; margin-bottom: 25px; }
+        input { 
+            width: 100%; 
+            padding: 20px; 
+            font-size: 18px; 
+            border-radius: 15px; 
+            border: none; 
+            margin-bottom: 20px; 
+            box-sizing: border-box; 
+            background: #1e293b; 
+            color: white; 
+        }
+        button { 
+            background: linear-gradient(90deg, #38bdf8, #8b5cf6); 
+            border: none; 
+            padding: 20px; 
+            color: white; 
+            border-radius: 15px; 
+            width: 100%; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+        #qrcode { 
+            margin: 30px auto; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 15px; 
+            width: fit-content; 
+        }
+        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; font-size: 16px; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>QR Generator</h1>
-        <input type="text" id="text" placeholder="Enter link...">
-        <button onclick="gen()">Generate</button>
-        <div id="qrcode"></div>
-        <br><br>
-        <a href="index.html" style="color:white;">Back Home</a>
-    </div>
-    <script>
-        function gen() {
-            document.getElementById("qrcode").innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), document.getElementById("text").value);
+
+<div class="tool-container">
+    <h1>QR Generator</h1>
+    <input type="text" id="text" placeholder="Enter text or link here...">
+    <button onclick="generateQR()">Generate QR Code</button>
+    
+    <div id="qrcode"></div>
+    
+    <a href="index.html" class="back-btn">← Back to Home</a>
+</div>
+
+<script>
+    function generateQR() {
+        const text = document.getElementById("text").value;
+        const qrDiv = document.getElementById("qrcode");
+        qrDiv.innerHTML = "";
+        if (text.trim() === "") {
+            alert("Please enter some text!");
+            return;
         }
-    </script>
+        new QRCode(qrDiv, {
+            text: text,
+            width: 250,
+            height: 250
+        });
+    }
+</script>
 </body>
 </html>
