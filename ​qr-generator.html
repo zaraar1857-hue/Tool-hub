@@ -3,42 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Generator - Tool Hub</title>
+    <title>QR Code Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { background: #0b1120; color: #fff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .tool-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); padding: 40px; border-radius: 24px; width: 100%; max-width: 500px; text-align: center; }
-        h2 { margin-bottom: 20px; }
-        #textInput { margin: 10px 0; width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; }
-        .btn { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 18px; border-radius: 12px; color: white; cursor: pointer; width: 100%; font-size: 18px; font-weight: 600; margin-top: 15px; }
-        #qrcode { margin: 20px auto; display: flex; justify-content: center; }
+        body { font-family: 'Poppins', sans-serif; background: #0b1120; color: #fff; padding: 20px; text-align: center; }
+        .tool-container { max-width: 500px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h1 { color: #38bdf8; margin-bottom: 20px; }
+        input { margin: 10px 0; padding: 15px; width: 100%; border-radius: 10px; border: none; font-size: 16px; }
+        button { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 15px; color: white; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #qrcode { margin: 20px auto; display: flex; justify-content: center; background: white; padding: 10px; border-radius: 10px; width: fit-content; }
+        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; }
+        
+        /* موبائل اور ڈیسک ٹاپ ایڈجسٹمنٹ */
+        @media (max-width: 500px) {
+            .tool-container { padding: 20px; }
+            h1 { font-size: 22px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="tool-card">
-    <h2>QR Generator</h2>
-    <input type="text" id="textInput" placeholder="Enter text or URL...">
-    <button class="btn" onclick="generateQR()">Generate QR Code</button>
+<div class="tool-container">
+    <h1>QR Code Generator</h1>
+    <input type="text" id="text" placeholder="Enter text or link here...">
+    <button onclick="generateQR()">Generate QR Code</button>
+    
     <div id="qrcode"></div>
+    
+    <a href="index.html" class="back-btn">← Back to Home</a>
 </div>
 
 <script>
     function generateQR() {
-        const text = document.getElementById('textInput').value;
-        const qrDiv = document.getElementById('qrcode');
-        qrDiv.innerHTML = ""; // پرانا کوڈ صاف کریں
-        if (!text) { alert("Please enter text!"); return; }
+        const text = document.getElementById("text").value;
+        const qrDiv = document.getElementById("qrcode");
         
+        // پچھلا کوڈ صاف کریں
+        qrDiv.innerHTML = "";
+        
+        if (text.trim() === "") {
+            alert("Please enter some text!");
+            return;
+        }
+
         new QRCode(qrDiv, {
             text: text,
             width: 200,
-            height: 200,
-            colorDark: "#ffffff",
-            colorLight: "#0b1120"
+            height: 200
         });
     }
 </script>
-
 </body>
 </html>
