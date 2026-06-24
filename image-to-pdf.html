@@ -4,38 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body { font-family: 'Poppins', sans-serif; background: #0b1120; color: #fff; padding: 20px; text-align: center; }
         .tool-container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        h1 { margin-bottom: 20px; color: #38bdf8; }
-        input[type="file"] { margin: 20px 0; padding: 10px; width: 100%; border: 2px dashed #555; border-radius: 10px; cursor: pointer; }
-        button { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 15px 30px; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
-        button:hover { opacity: 0.9; }
-        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; font-size: 14px; }
-        
-        /* موبائل کے لیے ایڈجسٹمنٹ */
-        @media (max-width: 600px) {
-            .tool-container { padding: 15px; }
-            h1 { font-size: 24px; }
-        }
+        h1 { color: #38bdf8; }
+        input[type="file"] { margin: 20px 0; padding: 15px; width: 100%; border: 2px dashed #38bdf8; border-radius: 10px; cursor: pointer; color: #fff; }
+        button { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 15px 30px; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
+        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <div class="tool-container">
-    <h1>Image to PDF Converter</h1>
-    <p>Upload your images and convert them into a professional PDF file.</p>
-    
-    <input type="file" id="imageInput" accept="image/*" multiple>
-    <button onclick="convertPDF()">Convert to PDF</button>
-    
+    <h1>Image to PDF</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="generatePDF()">Download as PDF</button>
     <br><br>
     <a href="index.html" class="back-btn">← Back to Home</a>
 </div>
 
 <script>
-    function convertPDF() {
-        alert("یہ ٹول ابھی تیار ہو رہا ہے! جیسے ہی آپ اس کا فنکشنل کوڈ چاہیں گے، میں وہ بھی دے دوں گا۔");
+    function generatePDF() {
+        const input = document.getElementById('imageInput');
+        if (input.files.length === 0) {
+            alert("Please select an image first!");
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const imgData = e.target.result;
+            const doc = new jsPDF();
+            doc.addImage(imgData, 'JPEG', 10, 10, 180, 150);
+            doc.save("converted-image.pdf");
+        };
+
+        reader.readAsDataURL(input.files[0]);
     }
 </script>
 
