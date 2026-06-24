@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer - Tool Hub</title>
+    <style>
+        body { background: #0b1120; color: #fff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .tool-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); padding: 40px; border-radius: 24px; width: 100%; max-width: 500px; text-align: center; }
+        h2 { margin-bottom: 20px; }
+        input { margin: 10px 0; width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; }
+        .btn { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 18px; border-radius: 12px; color: white; cursor: pointer; width: 100%; font-size: 18px; font-weight: 600; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="tool-card">
+    <h2>Image Resizer</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <input type="number" id="widthInput" placeholder="Enter Width (e.g. 800)">
+    <button class="btn" onclick="resizeImage()">Resize & Download</button>
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+    function resizeImage() {
+        const fileInput = document.getElementById('imageInput');
+        const width = document.getElementById('widthInput').value;
+        if (!fileInput.files[0] || !width) { alert("Please select an image and enter width!"); return; }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+                const scaleFactor = width / img.width;
+                canvas.width = width;
+                canvas.height = img.height * scaleFactor;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                const link = document.createElement('a');
+                link.download = 'resized_image.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+</script>
+
+</body>
+</html>
