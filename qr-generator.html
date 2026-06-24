@@ -3,70 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced QR Generator</title>
+    <title>Professional QR Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .tool-container { width: 100%; max-width: 500px; background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); text-align: center; border: 1px solid #334155; }
-        h1 { color: #38bdf8; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #38bdf8; border: none; color: #0f172a; font-weight: bold; border-radius: 10px; cursor: pointer; }
-        #qr-display { margin-top: 20px; display: none; }
-        #qr-title-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #fff; }
-        #qrcode { background: white; padding: 10px; border-radius: 10px; display: inline-block; }
-        .action-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .action-btns button { flex: 1; background: #8b5cf6; color: white; padding: 10px; }
+        body { font-family: sans-serif; background: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { width: 100%; max-width: 500px; background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #334155; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: none; box-sizing: border-box; }
+        .btn-gen { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #qr-box { margin-top: 20px; padding: 20px; background: white; border-radius: 10px; display: inline-block; }
+        .actions { margin-top: 20px; display: flex; gap: 10px; }
+        .actions button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-down { background: #10b981; color: white; }
+        .btn-share { background: #8b5cf6; color: white; }
     </style>
 </head>
 <body>
 
-<div class="tool-container">
+<div class="container">
     <h1>QR Generator</h1>
-    <input type="text" id="qrTitle" placeholder="Enter Title (e.g., My Business QR)">
+    <input type="text" id="qrTitle" placeholder="Title for QR">
     <input type="text" id="text" placeholder="Enter link or text...">
-    <button onclick="generateQR()">Generate QR Code</button>
-    
-    <div id="qr-display">
-        <div id="qr-title-text"></div>
+    <button class="btn-gen" onclick="makeQR()">Generate Now</button>
+
+    <div id="qr-box" style="display:none;">
+        <h3 id="displayTitle" style="color:black; margin:0 0 10px 0;"></h3>
         <div id="qrcode"></div>
-        <div class="action-btns">
-            <button onclick="downloadQR()">Download</button>
-            <button onclick="shareQR()">Share</button>
-        </div>
     </div>
-    <a href="index.html" style="display:block; margin-top:20px; color:#94a3b8; text-decoration:none;">← Back Home</a>
+
+    <div class="actions" id="action-btns" style="display:none;">
+        <button class="btn-down" onclick="downloadQR()">Download</button>
+        <button class="btn-share" onclick="shareQR()">Share</button>
+    </div>
+    <br><a href="index.html" style="color: #94a3b8;">Back to Home</a>
 </div>
 
 <script>
-    function generateQR() {
-        const title = document.getElementById("qrTitle").value;
+    function makeQR() {
         const text = document.getElementById("text").value;
+        const title = document.getElementById("qrTitle").value;
         const qrDiv = document.getElementById("qrcode");
-        
-        if (!text) { alert("Please enter content!"); return; }
+        if(!text) { alert("Please enter something!"); return; }
         
         qrDiv.innerHTML = "";
-        document.getElementById("qr-title-text").innerText = title;
         new QRCode(qrDiv, { text: text, width: 200, height: 200 });
-        document.getElementById("qr-display").style.display = "block";
+        
+        document.getElementById("displayTitle").innerText = title;
+        document.getElementById("qr-box").style.display = "block";
+        document.getElementById("action-btns").style.display = "flex";
     }
 
     function downloadQR() {
-        const link = document.createElement('a');
-        link.download = (document.getElementById("qrTitle").value || "qrcode") + '.png';
-        link.href = document.querySelector('#qrcode img').src;
-        link.click();
+        const img = document.querySelector("#qrcode img");
+        const a = document.createElement("a");
+        a.href = img.src;
+        a.download = "my-qr-code.png";
+        a.click();
     }
 
-    function shareQR() {
+    async function shareQR() {
+        const img = document.querySelector("#qrcode img");
+        const response = await fetch(img.src);
+        const blob = await response.blob();
+        const file = new File([blob], "qr.png", { type: "image/png" });
         if (navigator.share) {
-            fetch(document.querySelector('#qrcode img').src)
-                .then(res => res.blob())
-                .then(blob => {
-                    const file = new File([blob], "qrcode.png", { type: "image/png" });
-                    navigator.share({ files: [file], title: 'QR Code', text: 'Check this out!' });
-                });
-        } else { alert("Sharing not supported."); }
+            await navigator.share({ files: [file] });
+        } else {
+            alert("Sharing not supported on this browser.");
+        }
     }
 </script>
 </body>
