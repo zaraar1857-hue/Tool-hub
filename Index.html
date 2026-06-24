@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Hub - Free Online Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --bg: #0b1120;
+            --card: rgba(255, 255, 255, .06);
+            --card-hover: rgba(255, 255, 255, .1);
+            --border: rgba(255, 255, 255, .12);
+            --text: #fff;
+            --muted: #cbd5e1;
+            --accent: #38bdf8;
+            --accent2: #8b5cf6;
+        }
+
+        body {
+            background: 
+                radial-gradient(circle at top left, rgba(29, 78, 216, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.4) 0%, transparent 40%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: min(1200px, 92%);
+            margin: auto;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .hero {
+            padding: 80px 0 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero span {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search {
+            margin: 30px auto;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 20px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            backdrop-filter: blur(15px);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .search input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            background: var(--card-hover);
+        }
+
+        .categories {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0 40px;
+        }
+
+        .categories span {
+            padding: 10px 22px;
+            border-radius: 50px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .categories span:hover, .categories span.active {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            padding: 30px 24px;
+            border-radius: 24px;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            background: var(--card-hover);
+            box-shadow: 0 15px 30px rgba(56, 189, 248, 0.15);
+        }
+
+        .icon {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: var(--card);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .card:hover .btn {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding: 30px 0;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media(max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2rem; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">Tool Hub</div>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Tools</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <h1>Professional <span>Online Tools</span></h1>
+            
+            <div class="search">
+                <input type="text" placeholder="Search tools...">
+            </div>
+            
+            <div class="categories">
+                <span class="active">All Tools</span>
+                <span>PDF Tools</span>
+                <span>Image Tools</span>
+                <span>Calculators</span>
+                <span>Utilities</span>
+            </div>
+        </section>
+
+        <div class="grid">
+            <a class="card" href="image-to-pdf.html">
+                <div class="icon">📄</div>
+                <h3>Image to PDF</h3>
+                <p>Convert JPG, PNG and WEBP images into PDF documents instantly.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="pdf-to-text.html">
+                <div class="icon">📝</div>
+                <h3>PDF to Text</h3>
+                <p>Extract readable text from PDF files quickly and efficiently.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="pdf-merger.html">
+                <div class="icon">📚</div>
+                <h3>PDF Merger</h3>
+                <p>Combine multiple PDF files into a single document.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="pdf-splitter.html">
+                <div class="icon">✂️</div>
+                <h3>PDF Splitter</h3>
+                <p>Split PDF pages into separate documents.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="image-resizer.html">
+                <div class="icon">🖼️</div>
+                <h3>Image Resizer</h3>
+                <p>Resize images without installing any software.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="image-compressor.html">
+                <div class="icon">⚡</div>
+                <h3>Image Compressor</h3>
+                <p>Reduce image size while maintaining visual quality.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="qr-generator.html">
+                <div class="icon">🔳</div>
+                <h3>QR Generator</h3>
+                <p>Create custom QR codes for links and text.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="word-counter.html">
+                <div class="icon">🔤</div>
+                <h3>Word Counter</h3>
+                <p>Count words, characters and text length instantly.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="percentage-calculator.html">
+                <div class="icon">📊</div>
+                <h3>Percentage Calculator</h3>
+                <p>Calculate percentages, increases and decreases.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+            <a class="card" href="password-generator.html">
+                <div class="icon">🔐</div>
+                <h3>Password Generator</h3>
+                <p>Create strong and secure passwords with one click.</p>
+                <div class="btn">Open Tool</div>
+            </a>
+        </div>
+
+        <footer>
+            <h3>Tool Hub</h3>
+            <p>Fast • Secure • Free Online Utilities</p>
+            <p>© 2026 Tool Hub. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
