@@ -3,55 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Resizer</title>
+    <title>ProImage Studio | Lossless High-Quality</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #0b1120; color: #fff; padding: 20px; text-align: center; }
-        .tool-container { max-width: 500px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        h1 { color: #38bdf8; }
-        input { margin: 10px 0; padding: 10px; width: 100%; border-radius: 8px; border: none; }
-        button { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 15px; color: white; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        canvas { display: none; }
-        .back-btn { display: inline-block; margin-top: 20px; color: #cbd5e1; text-decoration: none; }
+        :root { --primary: #3b82f6; --success: #22c55e; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .app-container { width: 100%; max-width: 500px; background: var(--card); padding: 30px; border-radius: 20px; }
+        .upload-box { border: 2px dashed #475569; padding: 30px; text-align: center; border-radius: 15px; cursor: pointer; margin-bottom: 20px; }
+        #preview { max-width: 100%; margin-top: 10px; display: none; border: 2px solid var(--primary); }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: none; background: #334155; color: white; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #2563eb; }
     </style>
 </head>
 <body>
 
-<div class="tool-container">
-    <h1>Image Resizer</h1>
-    <input type="file" id="upload" accept="image/*">
+<div class="app-container">
+    <h1>ProImage Studio</h1>
+    <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+        <p id="uploadText">Click to Upload Image</p>
+        <img id="preview" alt="Preview">
+        <input type="file" id="fileInput" hidden accept="image/*">
+    </div>
+
     <input type="number" id="width" placeholder="Width (px)">
     <input type="number" id="height" placeholder="Height (px)">
-    <button onclick="resizeImage()">Resize & Download</button>
-    <canvas id="canvas"></canvas>
-    <br>
-    <a href="index.html" class="back-btn">← Back to Home</a>
+    
+    <select id="format">
+        <option value="image/png">PNG (Lossless - Best Quality)</option>
+        <option value="image/jpeg">JPG (Maximum Quality)</option>
+        <option value="image/webp">WEBP (High Quality)</option>
+        <option value="image/bmp">BMP (Uncompressed)</option>
+        <option value="image/tiff">TIFF (Professional Print)</option>
+    </select>
+
+    <button onclick="processImage()">Generate High-Quality Image</button>
 </div>
 
 <script>
-    function resizeImage() {
-        const file = document.getElementById('upload').files[0];
-        const width = document.getElementById('width').value;
-        const height = document.getElementById('height').value;
-        if (!file || !width || !height) return alert("Please select image and enter dimensions!");
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        if (!e.target.files[0]) return;
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(e.target.files[0]);
+        preview.style.display = 'block';
+        document.getElementById('uploadText').innerText = "File: " + e.target.files[0].name;
+    });
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.getElementById('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                const link = document.createElement('a');
-                link.download = 'resized-image.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            };
-            img.src = event.target.result;
+    function processImage() {
+        const file = document.getElementById('fileInput').files[0];
+        if (!file) return alert("Select an image first!");
+
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const targetW = parseInt(document.getElementById('width').value) || img.width;
+            const targetH = parseInt(document.getElementById('height').value) || img.height;
+            
+            canvas.width = targetW;
+            canvas.height = targetH;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // کوالٹی کو برقرار رکھنے کے لیے اہم سیٹنگز
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+            
+            const format = document.getElementById('format').value;
+            
+            // 1.0 کوالٹی کا مطلب ہے 100% کوالٹی (Zero Compression)
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                // فائل کے فارمیٹ کے مطابق نام سیٹ کرنا
+                const ext = format.split('/')[1].replace('jpeg', 'jpg');
+                a.download = "pro-image-optimized." + ext;
+                a.click();
+            }, format, 1.0);
         };
-        reader.readAsDataURL(file);
+        img.src = URL.createObjectURL(file);
     }
 </script>
 </body>
