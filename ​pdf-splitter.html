@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Splitter - Tool Hub</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <style>
+        body { background: #0b1120; color: #fff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .tool-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); padding: 40px; border-radius: 24px; width: 100%; max-width: 500px; text-align: center; }
+        h2 { margin-bottom: 20px; }
+        input { margin: 10px 0; width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 12px; color: white; }
+        .btn { background: linear-gradient(90deg, #38bdf8, #8b5cf6); border: none; padding: 18px; border-radius: 12px; color: white; cursor: pointer; width: 100%; font-size: 18px; font-weight: 600; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="tool-card">
+    <h2>PDF Splitter</h2>
+    <input type="file" id="pdfInput" accept="application/pdf">
+    <input type="number" id="pageNumber" placeholder="Enter Page Number to Extract">
+    <button class="btn" onclick="splitPDF()">Split & Download</button>
+</div>
+
+<script>
+    async function splitPDF() {
+        const fileInput = document.getElementById('pdfInput');
+        const pageNum = parseInt(document.getElementById('pageNumber').value) - 1;
+
+        if (fileInput.files.length === 0 || isNaN(pageNum)) { alert("Please select a file and enter a valid page number!"); return; }
+
+        const arrayBuffer = await fileInput.files[0].arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        
+        const newPdf = await PDFLib.PDFDocument.create();
+        const [copiedPage] = await newPdf.copyPages(pdf, [pageNum]);
+        newPdf.addPage(copiedPage);
+
+        const bytes = await newPdf.save();
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'split_page.pdf';
+        link.click();
+    }
+</script>
+
+</body>
+</html>
