@@ -2,52 +2,182 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Business QR Card Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business QR Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
-        .card { width: 100%; max-width: 450px; background: #1e293b; padding: 25px; border-radius: 20px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        #qrcode { margin-top: 20px; background: white; padding: 10px; display: inline-block; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #0f172a; 
+            color: #fff; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 450px; 
+            background: #1e293b; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            text-align: center; 
+            border: 1px solid #334155; 
+        }
+        h1 { 
+            color: #38bdf8; 
+            font-size: 1.8rem; 
+            margin-bottom: 20px; 
+        }
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 12px; 
+            border-radius: 8px; 
+            border: none; 
+            background: #f0f9ff; 
+            color: #0f172a; 
+            font-size: 15px; 
+            box-sizing: border-box; 
+            font-weight: 500;
+        }
+        .btn-gen { 
+            width: 100%; 
+            padding: 15px; 
+            background: #38bdf8; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 16px; 
+            cursor: pointer; 
+            color: #0f172a; 
+            margin-top: 5px;
+        }
+        #qr-box { 
+            margin-top: 25px; 
+            display: none; 
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+        } 
+        #qrcode { 
+            background: white; 
+            padding: 10px; 
+            border-radius: 10px; 
+            display: inline-block; 
+            margin-bottom: 15px; 
+        }
+        .actions { 
+            display: flex; 
+            gap: 10px; 
+            justify-content: center; 
+        }
+        .btn-act { 
+            flex: 1; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        .btn-down { background: #10b981; color: white; }
+        .btn-share { background: #8b5cf6; color: white; }
+        .back-link { 
+            display: block; 
+            margin-top: 20px; 
+            color: #94a3b8; 
+            text-decoration: none; 
+            font-size: 13px; 
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Business QR Card</h1>
-    <input type="text" id="name" placeholder="Full Name">
-    <input type="text" id="shop" placeholder="Shop/Company Name">
-    <input type="text" id="phone" placeholder="Mobile Number">
-    <input type="text" id="email" placeholder="Email Address">
-    <input type="file" id="logoInput" accept="image/*">
-    <button onclick="generateBusinessQR()">Create Business QR</button>
+<div class="container">
+    <h1>Business QR Generator</h1>
+    
+    <input type="text" id="shopName" placeholder="Shop / Business Name">
+    <input type="text" id="personName" placeholder="Your Full Name">
+    <input type="tel" id="mobileNum" placeholder="Mobile Number">
+    <input type="email" id="emailAdd" placeholder="Email Address">
+    
+    <button class="btn-gen" onclick="makeQR()">Generate QR Code</button>
 
-    <div id="qrcode"></div>
+    <div id="qr-box">
+        <div id="qrcode"></div>
+        <div class="actions">
+            <button class="btn-act btn-down" onclick="downloadQR()">Download</button>
+            <button class="btn-act btn-share" onclick="shareQR()">Share</button>
+        </div>
+    </div>
+    
+    <a href="index.html" class="back-link">← Back to Home</a>
 </div>
 
 <script>
-    function generateBusinessQR() {
-        const name = document.getElementById('name').value;
-        const shop = document.getElementById('shop').value;
-        const phone = document.getElementById('phone').value;
-        const email = document.getElementById('email').value;
-        
-        // vCard فارمیٹ (کانٹیکٹ سیو کرنے کے لیے)
-        const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${name}
-ORG:${shop}
-TEL:${phone}
-EMAIL:${email}
-END:VCARD`;
+    function makeQR() {
+        const shop = document.getElementById("shopName").value.trim();
+        const name = document.getElementById("personName").value.trim();
+        const phone = document.getElementById("mobileNum").value.trim();
+        const email = document.getElementById("emailAdd").value.trim();
 
-        document.getElementById('qrcode').innerHTML = "";
-        new QRCode(document.getElementById('qrcode'), {
-            text: vcard,
-            width: 200,
-            height: 200
+        if(!shop && !name && !phone && !email) {
+            alert("Please enter at least one detail to generate QR!");
+            return;
+        }
+
+        // یہ vCard کا فارمیٹ ہے، جس سے فون میں نمبر ڈائریکٹ سیو ہوتا ہے
+        const vcardData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${shop}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+
+        const qrDiv = document.getElementById("qrcode");
+        qrDiv.innerHTML = "";
+        
+        new QRCode(qrDiv, { 
+            text: vcardData, 
+            width: 200, 
+            height: 200 
         });
+        
+        document.getElementById("qr-box").style.display = "block";
+    }
+
+    function downloadQR() {
+        // تھوڑا سا انتظار تاکہ QR پوری طرح بن جائے
+        setTimeout(() => {
+            const img = document.querySelector("#qrcode img");
+            if (!img) return;
+            const a = document.createElement("a");
+            a.href = img.src;
+            a.download = "Business-QR-Code.png";
+            a.click();
+        }, 300);
+    }
+
+    async function shareQR() {
+        const img = document.querySelector("#qrcode img");
+        if (!img) return;
+        
+        try {
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            const file = new File([blob], "Business-QR.png", { type: "image/png" });
+            
+            if (navigator.share) {
+                await navigator.share({ 
+                    files: [file], 
+                    title: 'Business QR Code', 
+                    text: 'Scan to save my contact details!' 
+                });
+            } else {
+                alert("Sharing is not supported on this browser.");
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 </script>
 </body>
