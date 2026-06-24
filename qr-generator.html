@@ -3,115 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business QR Generator</title>
+    <title>Global Premium Payment QR Card</title>
+    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #0f172a; 
-            color: #fff; 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-        }
-        .container { 
-            width: 100%; 
-            max-width: 450px; 
-            background: #1e293b; 
-            padding: 30px; 
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 480px; background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; border: 1px solid #334155; }
+        h1 { color: #38bdf8; font-size: 1.8rem; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 14px; margin-bottom: 12px; border-radius: 8px; border: none; background: #f0f9ff; color: #0f172a; font-size: 15px; box-sizing: border-box; font-weight: 500; }
+        .btn-gen { width: 100%; padding: 15px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; color: #0f172a; margin-top: 5px; }
+        
+        #result-section { margin-top: 25px; display: none; }
+        
+        /* Premium Digital Card Styling */
+        #capture-area { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+            color: #ffffff; 
+            padding: 35px 25px; 
             border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            width: 340px; 
             text-align: center; 
-            border: 1px solid #334155; 
+            margin: auto; 
+            border: 1px solid #334155;
         }
-        h1 { 
-            color: #38bdf8; 
-            font-size: 1.8rem; 
-            margin-bottom: 20px; 
-        }
-        input { 
-            width: 100%; 
-            padding: 15px; 
-            margin-bottom: 12px; 
-            border-radius: 8px; 
-            border: none; 
-            background: #f0f9ff; 
-            color: #0f172a; 
-            font-size: 15px; 
-            box-sizing: border-box; 
-            font-weight: 500;
-        }
-        .btn-gen { 
-            width: 100%; 
-            padding: 15px; 
-            background: #38bdf8; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 16px; 
-            cursor: pointer; 
-            color: #0f172a; 
-            margin-top: 5px;
-        }
-        #qr-box { 
-            margin-top: 25px; 
-            display: none; 
-            background: rgba(0,0,0,0.2);
-            padding: 20px;
-            border-radius: 15px;
-        } 
-        #qrcode { 
-            background: white; 
-            padding: 10px; 
-            border-radius: 10px; 
-            display: inline-block; 
-            margin-bottom: 15px; 
-        }
-        .actions { 
-            display: flex; 
-            gap: 10px; 
-            justify-content: center; 
-        }
-        .btn-act { 
-            flex: 1; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 14px; 
-        }
+        #capture-area h2 { margin: 0 0 5px 0; color: #38bdf8; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        #capture-area h4 { margin: 0 0 15px 0; color: #cbd5e1; font-size: 16px; font-weight: 400; }
+        .payment-info { background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); text-align: left; }
+        .payment-info p { margin: 4px 0; font-size: 13px; color: #94a3b8; }
+        .payment-info strong { color: #fff; font-size: 14px; word-break: break-all; }
+        
+        #qrcode-container { margin-top: 20px; background: white; padding: 12px; border-radius: 12px; display: inline-block; }
+        
+        .actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .btn-act { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
         .btn-down { background: #10b981; color: white; }
         .btn-share { background: #8b5cf6; color: white; }
-        .back-link { 
-            display: block; 
-            margin-top: 20px; 
-            color: #94a3b8; 
-            text-decoration: none; 
-            font-size: 13px; 
-        }
+        .back-link { display: block; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Business QR Generator</h1>
+    <h1>Global Pay & Business QR</h1>
     
     <input type="text" id="shopName" placeholder="Shop / Business Name">
-    <input type="text" id="personName" placeholder="Your Full Name">
-    <input type="tel" id="mobileNum" placeholder="Mobile Number">
-    <input type="email" id="emailAdd" placeholder="Email Address">
+    <input type="text" id="personName" placeholder="Owner Name">
+    <input type="tel" id="mobileNum" placeholder="Mobile / WhatsApp Number">
     
-    <button class="btn-gen" onclick="makeQR()">Generate QR Code</button>
+    <!-- प्रॉपर सेलेक्ट ड्रॉपडाउन -->
+    <select id="bankSelect" onchange="toggleCustomBank()">
+        <option value="">-- Select Payment Method / Bank --</option>
+        
+        <optgroup label="🌍 Global Wallets & Cards">
+            <option value="PayPal">PayPal</option>
+            <option value="Wise">Wise (TransferWise)</option>
+            <option value="Payoneer">Payoneer</option>
+            <option value="Skrill">Skrill</option>
+            <option value="Binance Pay / Crypto">Binance Pay / Crypto</option>
+            <option value="Google Pay">Google Pay</option>
+            <option value="Apple Pay">Apple Pay</option>
+            <option value="Stripe">Stripe</option>
+        </optgroup>
 
-    <div id="qr-box">
-        <div id="qrcode"></div>
+        <optgroup label="🇵🇰 Pakistan Banks & Wallets">
+            <option value="Easypaisa">Easypaisa</option>
+            <option value="JazzCash">JazzCash</option>
+            <option value="SadaPay">SadaPay</option>
+            <option value="NayaPay">NayaPay</option>
+            <option value="RAAST ID">RAAST ID</option>
+            <option value="HBL (Habib Bank Limited)">HBL (Habib Bank Limited)</option>
+            <option value="UBL (United Bank Limited)">UBL (United Bank Limited)</option>
+            <option value="Meezan Bank">Meezan Bank</option>
+            <option value="Allied Bank">Allied Bank</option>
+            <option value="MCB Bank">MCB Bank</option>
+            <option value="Bank Alfalah">Bank Alfalah</option>
+        </optgroup>
+
+        <optgroup label="🇮🇳 India Banks & UPI">
+            <option value="Paytm">Paytm</option>
+            <option value="PhonePe">PhonePe</option>
+            <option value="GPay (Google Pay India)">GPay (Google Pay India)</option>
+            <option value="UPI ID">UPI ID</option>
+            <option value="SBI (State Bank of India)">SBI (State Bank of India)</option>
+            <option value="HDFC Bank">HDFC Bank</option>
+            <option value="ICICI Bank">ICICI Bank</option>
+            <option value="Axis Bank">Axis Bank</option>
+            <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+        </optgroup>
+
+        <optgroup label="🌐 International Banks">
+            <option value="HSBC">HSBC</option>
+            <option value="Standard Chartered">Standard Chartered</option>
+            <option value="CitiBank">CitiBank</option>
+            <option value="Barclays">Barclays</option>
+            <option value="Al Rajhi Bank">Al Rajhi Bank</option>
+            <option value="Dubai Islamic Bank">Dubai Islamic Bank</option>
+        </optgroup>
+
+        <optgroup label="✏️ Custom / Other">
+            <option value="Other">➕ Other (Type Manually)</option>
+        </optgroup>
+    </select>
+
+    <!-- यह बॉक्स तब खुलेगा जब कोई "Other" सेलेक्ट करेगा -->
+    <input type="text" id="customBankInput" placeholder="Enter Your Bank Name Manually" style="display: none;">
+
+    <input type="text" id="accountNum" placeholder="Account Number / IBAN / UPI / Crypto">
+    
+    <button class="btn-gen" onclick="makeSmartQR()">Generate Global Card</button>
+
+    <div id="result-section">
+        <!-- शेयर होने वाला प्रीमियम कार्ड -->
+        <div id="capture-area">
+            <h2 id="out-shop"></h2>
+            <h4 id="out-name"></h4>
+            
+            <div class="payment-info">
+                <p>Contact: <strong id="out-phone"></strong></p>
+                <p>Bank/Method: <strong id="out-bank"></strong></p>
+                <p>A/C Details: <strong id="out-acc"></strong></p>
+            </div>
+
+            <div id="qrcode-container">
+                <div id="qrcode"></div>
+            </div>
+            <p style="font-size: 11px; color: #64748b; margin-top: 15px; margin-bottom: 0;">Scan via App or Camera to Pay</p>
+        </div>
+        
         <div class="actions">
-            <button class="btn-act btn-down" onclick="downloadQR()">Download</button>
-            <button class="btn-act btn-share" onclick="shareQR()">Share</button>
+            <button class="btn-act btn-down" onclick="downloadCard()">Download</button>
+            <button class="btn-act btn-share" onclick="shareCard()">Share</button>
         </div>
     </div>
     
@@ -119,65 +141,75 @@
 </div>
 
 <script>
-    function makeQR() {
+    // यह फंक्शन चेक करता है कि अगर Other सिलेक्ट हुआ है तो नया बॉक्स दिखाओ
+    function toggleCustomBank() {
+        const select = document.getElementById("bankSelect").value;
+        const customInput = document.getElementById("customBankInput");
+        if (select === "Other") {
+            customInput.style.display = "block";
+        } else {
+            customInput.style.display = "none";
+        }
+    }
+
+    function makeSmartQR() {
         const shop = document.getElementById("shopName").value.trim();
         const name = document.getElementById("personName").value.trim();
         const phone = document.getElementById("mobileNum").value.trim();
-        const email = document.getElementById("emailAdd").value.trim();
-
-        if(!shop && !name && !phone && !email) {
-            alert("Please enter at least one detail to generate QR!");
-            return;
+        
+        // बैंक का नाम निकालने का लॉजिक
+        const selectedBank = document.getElementById("bankSelect").value;
+        let bank = selectedBank;
+        if (selectedBank === "Other") {
+            bank = document.getElementById("customBankInput").value.trim();
         }
 
-        // یہ vCard کا فارمیٹ ہے، جس سے فون میں نمبر ڈائریکٹ سیو ہوتا ہے
-        const vcardData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${shop}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+        const acc = document.getElementById("accountNum").value.trim();
+
+        if(!shop && !name) { alert("Please enter Shop Name and Owner Name!"); return; }
+        if(!bank) { alert("Please select or enter a Bank Name!"); return; }
+
+        document.getElementById("out-shop").innerText = shop;
+        document.getElementById("out-name").innerText = name;
+        document.getElementById("out-phone").innerText = phone ? phone : "N/A";
+        document.getElementById("out-bank").innerText = bank;
+        document.getElementById("out-acc").innerText = acc ? acc : "N/A";
+
+        const qrPaymentPayload = `BUSINESS: ${shop}\nOWNER: ${name}\nBANK: ${bank}\nACCOUNT: ${acc}\nCONTACT: ${phone}`;
 
         const qrDiv = document.getElementById("qrcode");
         qrDiv.innerHTML = "";
         
-        new QRCode(qrDiv, { 
-            text: vcardData, 
-            width: 200, 
-            height: 200 
+        new QRCode(qrDiv, { text: qrPaymentPayload, width: 160, height: 160 });
+        
+        document.getElementById("result-section").style.display = "block";
+    }
+
+    function downloadCard() {
+        const card = document.getElementById("capture-area");
+        html2canvas(card, { scale: 2 }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = "My-Payment-Card.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
         });
-        
-        document.getElementById("qr-box").style.display = "block";
     }
 
-    function downloadQR() {
-        // تھوڑا سا انتظار تاکہ QR پوری طرح بن جائے
-        setTimeout(() => {
-            const img = document.querySelector("#qrcode img");
-            if (!img) return;
-            const a = document.createElement("a");
-            a.href = img.src;
-            a.download = "Business-QR-Code.png";
-            a.click();
-        }, 300);
-    }
-
-    async function shareQR() {
-        const img = document.querySelector("#qrcode img");
-        if (!img) return;
-        
+    async function shareCard() {
+        const card = document.getElementById("capture-area");
         try {
-            const response = await fetch(img.src);
-            const blob = await response.blob();
-            const file = new File([blob], "Business-QR.png", { type: "image/png" });
-            
-            if (navigator.share) {
-                await navigator.share({ 
-                    files: [file], 
-                    title: 'Business QR Code', 
-                    text: 'Scan to save my contact details!' 
-                });
-            } else {
-                alert("Sharing is not supported on this browser.");
-            }
-        } catch (err) {
-            console.error(err);
-        }
+            const canvas = await html2canvas(card, { scale: 2 });
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], "Payment-Card.png", { type: "image/png" });
+                if (navigator.share) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Global Payment Card',
+                        text: 'Here is my digital payment card!'
+                    });
+                } else { alert("Sharing not supported on this browser."); }
+            }, "image/png");
+        } catch (err) { console.error(err); }
     }
 </script>
 </body>
